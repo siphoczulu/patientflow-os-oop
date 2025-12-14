@@ -45,4 +45,19 @@ public class InMemoryLeadRepository implements LeadRepository {
         }
         return result;
     }
+
+    @Override
+    public List<Lead> findByCity(String city) {
+        List<Lead> result = new ArrayList<>();
+        if (city == null) return result;
+
+        String target = city.trim().toLowerCase();
+        for (Lead lead : storage) {
+            String leadCity = lead.getContactInfo().getCity();
+            if (leadCity != null && leadCity.trim().toLowerCase().equals(target)) {
+                result.add(lead);
+            }
+        }
+        return result;
+    }
 }

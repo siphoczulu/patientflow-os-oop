@@ -46,4 +46,8 @@ public class LeadService {
     public Optional<Lead> getLeadById(long id) {
         return leadRepository.findById(id);
     }
+    public List<Lead> getLeadsByCity(String city) {
+        return leadRepository.findByCity(city);
+    }
+
 }
