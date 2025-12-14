@@ -41,6 +41,7 @@ public class PatientFlowApp {
                 case "4" -> listLeadsByStatus(LeadStatus.WARM);
                 case "5" -> listLeadsByStatus(LeadStatus.COLD);
                 case "6" -> dailySummary();
+                case "7" -> listLeadsByCity();
                 case "0" -> {
                     running = false;
                     System.out.println("Goodbye.");
@@ -58,6 +59,7 @@ public class PatientFlowApp {
         System.out.println("4) Show WARM leads");
         System.out.println("5) Show COLD leads");
         System.out.println("6) Daily summary (counts)");
+        System.out.println("7) List leads by city");
         System.out.println("0) Exit");
         System.out.print("Choose an option: ");
     }
@@ -187,8 +189,6 @@ public class PatientFlowApp {
             }
         }
     }
-
-
     // --- NEW METHOD FOR DAILY SUMMARY ---
     private void dailySummary() {
         System.out.println("\n--- Daily Summary ---");
@@ -201,6 +201,19 @@ public class PatientFlowApp {
         System.out.println("HOT: " + hot);
         System.out.println("WARM: " + warm);
         System.out.println("COLD: " + cold);
+    }
+    //Method to list leads by city
+    private void listLeadsByCity() {
+        System.out.println("\n--- Leads by City ---");
+        String city = readNonEmpty("Enter city: ");
+
+        var leads = leadService.getLeadsByCity(city);
+        if (leads.isEmpty()) {
+            System.out.println("(no leads found for city: " + city + ")");
+            return;
+        }
+
+        leads.forEach(System.out::println);
     }
 }
 
