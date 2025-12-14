@@ -36,7 +36,9 @@ public class PatientFlowApp {
                 case "1" -> createLeadFlow();
                 case "2" -> listAllLeads();
                 case "3" -> listLeadsByStatus(LeadStatus.HOT);
-                case "4" -> findLeadById();
+                case "4" -> listLeadsByStatus(LeadStatus.WARM);
+                case "5" -> listLeadsByStatus(LeadStatus.COLD);
+                case "6" -> dailySummary();
                 case "0" -> {
                     running = false;
                     System.out.println("Goodbye.");
@@ -51,7 +53,9 @@ public class PatientFlowApp {
         System.out.println("1) Create new lead");
         System.out.println("2) List all leads");
         System.out.println("3) Show HOT leads");
-        System.out.println("4) Find lead by ID");
+        System.out.println("4) Show WARM leads");
+        System.out.println("5) Show COLD leads");
+        System.out.println("6) Daily summary (counts)");
         System.out.println("0) Exit");
         System.out.print("Choose an option: ");
     }
@@ -121,6 +125,7 @@ public class PatientFlowApp {
         leads.forEach(System.out::println);
     }
 
+    // We keep this method helper, but it's not currently in the menu (replaced by WARM leads)
     private void findLeadById() {
         System.out.println("\n--- Find Lead by ID ---");
         long id = readLong("Enter lead ID: ");
@@ -180,4 +185,13 @@ public class PatientFlowApp {
             }
         }
     }
+
+
+    // --- NEW METHOD FOR DAILY SUMMARY ---
+    private void dailySummary() {
+        System.out.println("\n--- Daily Summary ---");
+        int hot = leadService.getLeadsByStatus(LeadStatus.HOT).size();
+        int warm = leadService
+=======
 }
+
