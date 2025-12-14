@@ -1,5 +1,3 @@
-package com.patientflow.app;
-
 import com.patientflow.model.ContactInfo;
 import com.patientflow.model.Lead;
 import com.patientflow.model.LeadStatus;
@@ -38,9 +36,7 @@ public class PatientFlowApp {
                 case "1" -> createLeadFlow();
                 case "2" -> listAllLeads();
                 case "3" -> listLeadsByStatus(LeadStatus.HOT);
-                case "4" -> listLeadsByStatus(LeadStatus.WARM);
-                case "5" -> listLeadsByStatus(LeadStatus.COLD);
-                case "6" -> dailySummary();
+                case "4" -> findLeadById();
                 case "0" -> {
                     running = false;
                     System.out.println("Goodbye.");
@@ -55,9 +51,7 @@ public class PatientFlowApp {
         System.out.println("1) Create new lead");
         System.out.println("2) List all leads");
         System.out.println("3) Show HOT leads");
-        System.out.println("4) Show WARM leads");
-        System.out.println("5) Show COLD leads");
-        System.out.println("6) Daily summary (counts)");
+        System.out.println("4) Find lead by ID");
         System.out.println("0) Exit");
         System.out.print("Choose an option: ");
     }
@@ -127,6 +121,19 @@ public class PatientFlowApp {
         leads.forEach(System.out::println);
     }
 
+    private void findLeadById() {
+        System.out.println("\n--- Find Lead by ID ---");
+        long id = readLong("Enter lead ID: ");
+
+        Optional<Lead> leadOpt = leadService.getLeadById(id);
+        if (leadOpt.isPresent()) {
+            System.out.println("✅ Found:");
+            System.out.println(leadOpt.get());
+        } else {
+            System.out.println("❌ Lead not found.");
+        }
+    }
+
     // ---------- input helpers ----------
 
     private String readNonEmpty(String prompt) {
@@ -150,6 +157,18 @@ public class PatientFlowApp {
         }
     }
 
+    private long readLong(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            try {
+                return Long.parseLong(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+    }
+
     private double readDouble(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -160,18 +179,5 @@ public class PatientFlowApp {
                 System.out.println("Please enter a valid number (e.g. 3000).");
             }
         }
-    }
-
-    private void dailySummary() {
-        System.out.println("\n--- Daily Summary ---");
-        int hot = leadService.getLeadsByStatus(LeadStatus.HOT).size();
-        int warm = leadService.getLeadsByStatus(LeadStatus.WARM).size();
-        int cold = leadService.getLeadsByStatus(LeadStatus.COLD).size();
-        int total = leadService.getAllLeads().size();
-
-        System.out.println("Total Leads: " + total);
-        System.out.println("HOT: " + hot);
-        System.out.println("WARM: " + warm);
-        System.out.println("COLD: " + cold);
     }
 }
