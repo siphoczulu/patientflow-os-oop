@@ -1,5 +1,3 @@
-package com.patientflow.app;
-
 import com.patientflow.model.ContactInfo;
 import com.patientflow.model.Lead;
 import com.patientflow.model.LeadStatus;
@@ -188,8 +186,12 @@ public class PatientFlowApp {
         }
     }
 
+
     // --- NEW METHOD FOR DAILY SUMMARY ---
     private void dailySummary() {
         System.out.println("\n--- Daily Summary ---");
         int hot = leadService.getLeadsByStatus(LeadStatus.HOT).size();
         int warm = leadService
+=======
+}
+
