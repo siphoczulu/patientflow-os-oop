@@ -1,3 +1,5 @@
+package com.patientflow.app;
+
 import com.patientflow.model.ContactInfo;
 import com.patientflow.model.Lead;
 import com.patientflow.model.LeadStatus;
@@ -191,7 +193,14 @@ public class PatientFlowApp {
     private void dailySummary() {
         System.out.println("\n--- Daily Summary ---");
         int hot = leadService.getLeadsByStatus(LeadStatus.HOT).size();
-        int warm = leadService
-=======
+        int warm = leadService.getLeadsByStatus(LeadStatus.WARM).size();
+        int cold = leadService.getLeadsByStatus(LeadStatus.COLD).size();
+        int total = leadService.getAllLeads().size();
+
+        System.out.println("Total Leads: " + total);
+        System.out.println("HOT: " + hot);
+        System.out.println("WARM: " + warm);
+        System.out.println("COLD: " + cold);
+    }
 }
 
