@@ -6,6 +6,10 @@ import com.patientflow.model.LeadStatus;
 import com.patientflow.repository.InMemoryLeadRepository;
 import com.patientflow.scoring.DefaultLeadScoringStrategy;
 import com.patientflow.service.LeadService;
+import com.patientflow.repository.InMemoryPatientRepository;
+import com.patientflow.service.PatientService;
+import com.patientflow.model.Patient;
+
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -13,13 +17,17 @@ import java.util.Scanner;
 public class PatientFlowApp {
 
     private final LeadService leadService;
+    private final PatientService patientService;
     private final Scanner scanner;
 
     public PatientFlowApp() {
         InMemoryLeadRepository leadRepository = new InMemoryLeadRepository();
+        InMemoryPatientRepository patientRepository = new InMemoryPatientRepository();
         DefaultLeadScoringStrategy scoringStrategy = new DefaultLeadScoringStrategy();
         this.leadService = new LeadService(leadRepository, scoringStrategy);
         this.scanner = new Scanner(System.in);
+        this.patientService = new PatientService(patientRepository);
+
     }
 
     public static void main(String[] args) {
@@ -42,6 +50,9 @@ public class PatientFlowApp {
                 case "5" -> listLeadsByStatus(LeadStatus.COLD);
                 case "6" -> dailySummary();
                 case "7" -> listLeadsByCity();
+                case "8" -> convertLeadToPatientFlow();
+                case "9" -> listAllPatients();
+                case "10" -> findPatientById();
                 case "0" -> {
                     running = false;
                     System.out.println("Goodbye.");
@@ -60,6 +71,9 @@ public class PatientFlowApp {
         System.out.println("5) Show COLD leads");
         System.out.println("6) Daily summary (counts)");
         System.out.println("7) List leads by city");
+        System.out.println("8) Convert lead to patient");
+        System.out.println("9) List all patients");
+        System.out.println("10) Find patient by ID");
         System.out.println("0) Exit");
         System.out.print("Choose an option: ");
     }
@@ -215,5 +229,49 @@ public class PatientFlowApp {
 
         leads.forEach(System.out::println);
     }
+    //This right herre is the method to convert a lead to a patient!. VERY IMPORTANT!
+    private void convertLeadToPatientFlow() {
+        System.out.println("\n--- Convert Lead to Patient ---");
+        long leadId = readLong("Enter lead ID to convert: ");
+
+        System.out.print("Notes (optional): ");
+        String notes = scanner.nextLine().trim();
+
+        try {
+            Patient patient = leadService.convertLeadToPatient(leadId, notes, patientService);
+            System.out.println("✅ Converted successfully!");
+            System.out.println("New Patient ID: " + patient.getId());
+            System.out.println(patient);
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+    //Lists all the patients in the system
+    private void listAllPatients() {
+        System.out.println("\n--- All Patients ---");
+        var patients = patientService.getAllPatients();
+
+        if (patients.isEmpty()) {
+            System.out.println("(no patients yet)");
+            return;
+        }
+
+        patients.forEach(System.out::println);
+    }
+    //patient search by ID
+    private void findPatientById() {
+        System.out.println("\n--- Find Patient by ID ---");
+        long id = readLong("Enter patient ID: ");
+
+        var patientOpt = patientService.getPatientById(id);
+        if (patientOpt.isPresent()) {
+            System.out.println("✅ Found:");
+            System.out.println(patientOpt.get());
+        } else {
+            System.out.println("❌ Patient not found.");
+        }
+    }
+
 }
 

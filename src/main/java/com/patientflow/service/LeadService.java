@@ -50,4 +50,28 @@ public class LeadService {
         return leadRepository.findByCity(city);
     }
 
+    //This method converts a Lead to a Patient
+    public com.patientflow.model.Patient convertLeadToPatient(long leadId,
+                                                              String notes,
+                                                              PatientService patientService) {
+
+        Lead lead = leadRepository.findById(leadId)
+                .orElseThrow(() -> new IllegalArgumentException("Lead not found: " + leadId));
+
+        com.patientflow.model.Patient patient = new com.patientflow.model.Patient(
+                lead.getFullName(),
+                lead.getContactInfo(),
+                lead.getAge(),
+                lead.getTreatmentType(),
+                notes
+        );
+
+        patientService.save(patient);
+
+        // THis deletes the lead after conversion to patient
+        leadRepository.deleteById(leadId);
+
+        return patient;
+    }
+
 }
