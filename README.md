@@ -89,6 +89,14 @@ The project is structured into clearly separated packages.
 - `LeadScoringStrategy` defines scoring behavior
 - `DefaultLeadScoringStrategy` applies simple, readable rules
 
+## UML Class Diagram
+
+We created a UML class diagram to show how the layers connect (App → Service → Repository/Strategy → Model).
+
+- Mermaid source: `docs/uml/class-diagram.md`
+- Rendered image: `docs/uml/class-diagram.png`
+
+[PatientFlow OS UML](docs/uml/class-diagram.png)
 ---
 
 ## 5. Example Program Flow
