@@ -14,12 +14,26 @@ import com.patientflow.model.Patient;
 import java.util.Optional;
 import java.util.Scanner;
 
+/**
+ * Main application class for PatientFlow OS.
+ * Provides a console-based interface for managing dental leads and patients.
+ * Users can create leads, view leads by status, convert leads to patients, and more.
+ * This class ties together services and repositories to provide a functional application.
+ * We intend to implement a GUI in the future, but for now, this console app serves as a proof of concept.
+ * Intended for small to medium dental clinics looking to streamline their lead and patient management processes.
+ */
 public class PatientFlowApp {
 
     private final LeadService leadService;
     private final PatientService patientService;
     private final Scanner scanner;
 
+    /**Constructor to initialize services and scanner
+     * We designed it this way to keep the main method clean and focused on running the app.
+     * If in future we decide to add more services or dependencies, we can easily do so here without cluttering the main method.
+     * All we change is the constructor instead of the entire system
+     * WE wnated to keep things maintainable and scalable, we are thinking ahead :)
+     */
     public PatientFlowApp() {
         InMemoryLeadRepository leadRepository = new InMemoryLeadRepository();
         InMemoryPatientRepository patientRepository = new InMemoryPatientRepository();
@@ -30,10 +44,11 @@ public class PatientFlowApp {
 
     }
 
+    // Main method to start the application
     public static void main(String[] args) {
         new PatientFlowApp().run();
     }
-
+    // Main application loop
     private void run() {
         System.out.println("=== PatientFlow OS – Dental Lead & Patient Management System ===");
 
@@ -42,6 +57,7 @@ public class PatientFlowApp {
             printMenu();
             String choice = scanner.nextLine().trim();
 
+            // This switch statement handles user choices in the menu
             switch (choice) {
                 case "1" -> createLeadFlow();
                 case "2" -> listAllLeads();
@@ -62,6 +78,7 @@ public class PatientFlowApp {
         }
     }
 
+    // Method to print the main menu
     private void printMenu() {
         System.out.println();
         System.out.println("1) Create new lead");
@@ -78,6 +95,7 @@ public class PatientFlowApp {
         System.out.print("Choose an option: ");
     }
 
+    // Flow to create a new lead. VERY IMPORTANT METHOD
     private void createLeadFlow() {
         System.out.println("\n--- New Lead ---");
 
@@ -119,6 +137,7 @@ public class PatientFlowApp {
         System.out.println("Score: " + lead.getScore());
     }
 
+    // Method to list all leads
     private void listAllLeads() {
         System.out.println("\n--- All Leads ---");
         var leads = leadService.getAllLeads();
@@ -131,6 +150,7 @@ public class PatientFlowApp {
         leads.forEach(System.out::println);
     }
 
+    // Method to list leads by their status (HOT, WARM, COLD)
     private void listLeadsByStatus(LeadStatus status) {
         System.out.println("\n--- " + status + " Leads ---");
         var leads = leadService.getLeadsByStatus(status);
@@ -143,7 +163,7 @@ public class PatientFlowApp {
         leads.forEach(System.out::println);
     }
 
-    // We keep this method helper, but it's not currently in the menu (replaced by WARM leads)
+    // We keep this method helper, but it's not currently in the menu (replaced by WARM leads). You can find the logic for it in LeadService if needed.
     private void findLeadById() {
         System.out.println("\n--- Find Lead by ID ---");
         long id = readLong("Enter lead ID: ");
@@ -157,8 +177,7 @@ public class PatientFlowApp {
         }
     }
 
-    // ---------- input helpers ----------
-
+    // Helper methods to read user input with validation. In case of invalid input, prompts again.
     private String readNonEmpty(String prompt) {
         while (true) {
             System.out.print(prompt);
