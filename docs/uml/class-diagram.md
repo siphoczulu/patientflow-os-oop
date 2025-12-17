@@ -3,9 +3,9 @@
 ```mermaid
 classDiagram
 
---------------------------
-      APP LAYER
---------------------------
+%% =========================
+%% APP LAYER
+%% =========================
 class PatientFlowApp {
   - LeadService leadService
   - PatientService patientService
@@ -22,9 +22,10 @@ class PatientFlowApp {
   - listAllPatients() void
   - findPatientById() void
 }
----------------------------
-       MODEL LAYER
----------------------------
+
+%% =========================
+%% MODEL LAYER
+%% =========================
 class Lead {
   - long id
   - String fullName
@@ -83,9 +84,9 @@ class LeadStatus {
   COLD
 }
 
----------------------------
-    REPOSITORY LAYER
----------------------------
+%% =========================
+%% REPOSITORY LAYER
+%% =========================
 class CrudRepository~T,ID~ {
   <<interface>>
   + save(entity) T
@@ -134,9 +135,9 @@ class DefaultLeadScoringStrategy {
   + calculateScore(lead) int
 }
 
---------------------------
-    SERVICE LAYER
---------------------------
+%% =========================
+%% SERVICE LAYER
+%% =========================
 class LeadService {
   - LeadRepository leadRepository
   - LeadScoringStrategy scoringStrategy
@@ -155,16 +156,16 @@ class PatientService {
   + getPatientById(id) Optional~Patient~
 }
 
---------------------------
-    RELATIONSHIPS
---------------------------
+%% =========================
+%% RELATIONSHIPS
+%% =========================
 
 PatientFlowApp --> LeadService : uses
 PatientFlowApp --> PatientService : uses
 
 LeadService --> LeadRepository : depends on
 LeadService --> LeadScoringStrategy : depends on
-LeadService --> PatientService : uses (for conversion)
+LeadService --> PatientService : uses (conversion)
 
 PatientService --> PatientRepository : depends on
 
